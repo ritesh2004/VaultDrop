@@ -1,7 +1,6 @@
-import express,{ Express } from "express";
+import app from "./app.ts";
+import config from "./config/config.ts";
 
-const app: Express = express();
-
-app.listen(8000,()=>{
-    console.log("Server is running on PORT 8000")
-})
+app.listen(config.PORT, () => {
+    console.log(`Server is running on port ${config.PORT}`);
+});
