@@ -1,6 +1,7 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
+import compression from "compression";
 import ApiError, { errorHandler } from "./utils/ApiError.ts";
 
 const app: Express = express();
@@ -14,6 +15,7 @@ app.use(helmet()); // Security middleware
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.static("public")); // Serve static files from the "public" directory
+app.use(compression()); // Compress response bodies
 
 // Routes
 import routes from "./routes/index.ts";
