@@ -7,8 +7,8 @@ import httpStatus from '../utils/httpStatus.json' with { type: 'json' };
 import { Request, Response } from 'express';
 
 const registerUserController = asyncHandler(async (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    const data = await registerUserService(email, password);
+    const { email, password, name } = req.body;
+    const data = await registerUserService(email, password, name);
 
     if (!data) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User registration failed');

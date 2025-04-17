@@ -1,8 +1,19 @@
 import supabase from "../config/supabase.ts";
 import ApiError from "../utils/ApiError.ts";
 import httpStatus from "../utils/httpStatus.json" with { type: "json" };
+import db from "../db/connect.db.ts";
+import { Users } from "../db/schema/user.schema.ts";
+import { eq } from "drizzle-orm";
 
-const registerUserService = async (email: string, password: string): Promise<any> => {
+const registerUserService = async (email: string, password: string, name: string): Promise<any> => {
+
+    // Check if the user already exists
+    const res = await db.select().from(Users).where(eq(Users.email, email)).execute();
+
+    if (res.length > 0) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "User already exists");
+    }
+
     const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -12,10 +23,28 @@ const registerUserService = async (email: string, password: string): Promise<any
         throw new ApiError(httpStatus.BAD_REQUEST, error.message);
     }
 
-    return data;
+    const { user, session } = data;
+    
+    const results = await db.insert(Users).values({
+        id: user?.id || "",
+        email: user?.email || "",
+        name: name|| "Anonymous", // Extract name from email or use a default
+        refreshToken: session?.refresh_token || "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }).returning();
+
+    return results[0]; // Return the newly created user record
 }
 
 const loginUserService = async (email: string, password: string): Promise<any> => {
+    // Check if the user exists
+    const res = await db.select().from(Users).where(eq(Users.email, email)).execute();
+
+    if (res.length === 0) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User does not exist");
+    }
+    // Check if the user is already logged in
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -24,6 +53,12 @@ const loginUserService = async (email: string, password: string): Promise<any> =
     if (error) {
         throw new ApiError(httpStatus.BAD_REQUEST, error.message);
     }
+
+    const { user, session } = data;
+    await db.update(Users).set({
+        refreshToken: session?.refresh_token,
+        updatedAt: new Date(),
+    }).where(eq(Users.id, user?.id)).returning();
 
     return data;
 }

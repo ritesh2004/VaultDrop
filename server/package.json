@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch --env-file=.env --clear-screen=false src/index.ts"
+    "dev": "tsx watch --env-file=.env --clear-screen=false src/index.ts",
+    "migrate:generate": "npx drizzle-kit generate",
+    "migrate:push": "npx drizzle-kit push"
   },
   "author": "Ritesh Pramanik",
   "license": "ISC",
@@ -17,6 +19,8 @@
     "@types/express": "^5.0.1",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.14.1",
+    "@types/pg": "^8.11.13",
+    "drizzle-kit": "^0.31.0",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
@@ -26,10 +30,14 @@
     "@supabase/supabase-js": "^2.49.4",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.42.0",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "install": "^0.13.0",
     "multer": "^1.4.5-lts.2",
+    "pg": "^8.14.1",
+    "uuid": "^11.1.0",
     "zod": "^3.24.2"
   }
 }

@@ -4,15 +4,15 @@
     "lib": ["es2023"],
     "module": "nodenext",
     "target": "es2022",
-
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "resolveJsonModule": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true
   }
 }

@@ -3,6 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import ApiError, { errorHandler } from "./utils/ApiError.ts";
+import dotenv from "dotenv";
+dotenv.config({
+    path: "./.env", // Path to your .env file
+}); // Load environment variables from .env file
 
 const app: Express = express();
 
