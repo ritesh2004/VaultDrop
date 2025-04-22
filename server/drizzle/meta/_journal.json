@@ -8,6 +8,20 @@
       "when": 1744887467222,
       "tag": "0000_absurd_callisto",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1745240229996,
+      "tag": "0001_misty_vanisher",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1745240898326,
+      "tag": "0002_uneven_speed_demon",
+      "breakpoints": true
     }
   ]
 }

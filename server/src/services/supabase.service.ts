@@ -3,9 +3,9 @@ import ApiError from "../utils/ApiError.ts";
 import httpStatus from "../utils/httpStatus.json" with { type: "json" };
 import db from "../db/connect.db.ts";
 import { Users } from "../db/schema/user.schema.ts";
-import { eq } from "drizzle-orm";
+import { eq,ne } from "drizzle-orm";
 
-const registerUserService = async (email: string, password: string, name: string): Promise<any> => {
+const registerUserService = async (email: string, password: string, name: string, role: string): Promise<any> => {
 
     // Check if the user already exists
     const res = await db.select().from(Users).where(eq(Users.email, email)).execute();
@@ -29,6 +29,7 @@ const registerUserService = async (email: string, password: string, name: string
         id: user?.id || "",
         email: user?.email || "",
         name: name|| "Anonymous", // Extract name from email or use a default
+        role: (role === "user" || role === "admin") ? role : "user", // Ensure role matches expected values
         refreshToken: session?.refresh_token || "",
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -93,10 +94,22 @@ const getCurrentUserService = async (): Promise<any> => {
     return data.user;
 }
 
+const getOtherUserService = async (userId: string): Promise<any> => {
+    
+    const result = await db.select({ id: Users.id, name: Users.name, email: Users.email }).from(Users).where(ne(Users.id, userId)).execute();
+
+    if (result.length === 0) {
+        throw new ApiError(httpStatus.NOT_FOUND, "No other users found");
+    }
+    return result;
+}
+
 
 export {
     registerUserService,
     loginUserService,
     refreshTokenService,
-    logoutService
+    logoutService,
+    getCurrentUserService,
+    getOtherUserService,
 };

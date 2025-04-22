@@ -27,7 +27,6 @@ export const validateUser = async (req: AuthRequest, res: Response, next: NextFu
             return next(new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access'));
         }
         
-        console.log("User Data:", data); // Log the user data for debugging
         req.user = data.user;
         req.supabaseClient = supabase; // Attach the supabase client to the request object
         

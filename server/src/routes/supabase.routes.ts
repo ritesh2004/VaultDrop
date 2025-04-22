@@ -36,4 +36,10 @@ router.get(
     supabaseController.getCurrentUserController
 )
 
+router.get(
+    '/user/other',
+    validateUser,
+    supabaseController.getOtherUserController
+)
+
 export default router;

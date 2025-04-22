@@ -1,5 +1,5 @@
 import { AuthRequest } from '../middlewares/auth.middleware.ts';
-import { loginUserService, logoutService, refreshTokenService, registerUserService } from '../services/supabase.service.ts';
+import { getOtherUserService, loginUserService, logoutService, refreshTokenService, registerUserService } from '../services/supabase.service.ts';
 import ApiError from '../utils/ApiError.ts';
 import ApiResponse from '../utils/ApiResponse.ts';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -7,8 +7,8 @@ import httpStatus from '../utils/httpStatus.json' with { type: 'json' };
 import { Request, Response } from 'express';
 
 const registerUserController = asyncHandler(async (req: Request, res: Response) => {
-    const { email, password, name } = req.body;
-    const data = await registerUserService(email, password, name);
+    const { email, password, name, role } = req.body;
+    const data = await registerUserService(email, password, name, role);
 
     if (!data) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User registration failed');
@@ -90,6 +90,21 @@ const getCurrentUserController = asyncHandler(async (req: AuthRequest, res: Resp
     )
 });
 
+const getOtherUserController = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const userId = req.user.id; // Get the user ID from the request
+
+    const users = await getOtherUserService(userId); // Call the service to get all shared files
+    if (!users) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'No other users found');
+    }
+    return res.status(httpStatus.OK).json(
+        new ApiResponse(
+            httpStatus.OK,
+            'Users fetched successfully',
+            users
+        )
+    )
+});
 
 export default {
     registerUserController,
@@ -97,4 +112,5 @@ export default {
     refreshTokenController,
     logoutController,
     getCurrentUserController,
+    getOtherUserController,
 }
